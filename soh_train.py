@@ -13,7 +13,7 @@ print(__doc__)
 import sys
 import os, re
 
-app_dir = "../ncm"
+app_dir = "../zc"
 m = re.match(r'(\.\.\/)(\w+)', app_dir)
 save_dir = m.group(2)
 #lib_dir = "../libs"
