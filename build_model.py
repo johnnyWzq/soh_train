@@ -43,18 +43,19 @@ def calc_feature_data(config, cell_key, score_key, file_dir, file_name, data=Non
     """
     if data == None:
         data = ioo.read_csv(os.path.join(file_dir, file_name + '.csv'))
-    feature_name = ['dqdv', 'voltage']
+    feature_name = ['dqdv', 'temperature_mean_mean']#, 'voltage']
     data = sel_feature(data, *feature_name)
     if data is None:
         return None, None, None
     data = ff.calc_score(data, score_key)
     data = data[data['score'] > 0.1]
+    data = data.dropna()
     
     print('getting the feature...')
     data_x = data[[i for i in data.columns if 'feature_' in i]]
     #将电流特征去掉
     #data_x = data_x.drop([i for i in data.columns if '_current_' in i], axis=1)
-    data_x = ff.drop_feature(data_x)
+    data_x = ff.drop_feature(data_x, is_dqdv=True)
     data_y = data['score']
     
     cell_key = data[[cell_key]]
@@ -85,7 +86,7 @@ def build_model(data_x, data_y, split_mode='test',
         model = DecisionTreeRegressor()
         res['dt'] = ut.test_model(model, x_train, x_val, y_train, y_val)
         ut.save_model(model, data_x.columns, pkl_dir, depth=5)
-        model = RandomForestRegressor()
+        model = RandomForestRegressor()#criterion='mse', n_estimators=500, min_samples_leaf=50)
         res['rf'] = ut.test_model(model, x_train, x_val, y_train, y_val)
         ut.save_model(model, data_x.columns, pkl_dir, depth=5)
         model = GradientBoostingRegressor()

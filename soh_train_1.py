@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -35,6 +36,8 @@ def init_data_para():
     para_dict['log_raw'] = 'cell_soh'
     para_dict['log_pro'] = 'processed'
     
+    para_dict['pkl_log'] = 'pkl'
+    
     para_dict['run_mode'] = 'debug'
     return para_dict
 
@@ -43,10 +46,18 @@ def main(argv):
     para_dict =  init_data_para()
     para_dict = fc.deal_argv(argv, para_dict)
     mode = para_dict['run_mode']
-
+    bat_list = ['LG36_NCM_cell_2016_11', 'LG36_NCM_cell_2016_12', 'LG36_NCM_cell_2016_13', 'LG36_NCM_cell_2016_14',\
+                'LG36_NCM_cell_2016_15', 'LG36_NCM_cell_2016_16', 'LG36_NCM_cell_2016_17', 'LS37_NCM_cell_2018_19',\
+                'X120_NCM_cell_2018_1', 'X120_NCM_cell_2018_2', 'X140_NCM_cell_2018_1',\
+                'DR50_NCM_cell_2018_1', 'DR50_NCM_cell_2018_2', 'DR50_NCM_cell_2018_3',\
+                'X78_NCM_cell_2018_1', 'X78_NCM_cell_2018_2', 'X78_NCM_cell_2018_3', 'X78_NCM_cell_2018_4',\
+                'X23_NCM_cell_2019_1', 'X23_NCM_cell_2019_2']
+    bat_list = ['LG36_NCM_cell_2016_17', 'LG36_NCM_cell_2016_12',
+                'LG36_NCM_cell_2016_16']#'X120_NCM_cell_2018_1', 'X78_NCM_cell_2018_1', 'X78_NCM_cell_2018_2',\
+                #'X120_NCM_cell_2018_1']
     #读取所需的数据，并进行处理后存储到指定位置
     print('starting processing the data...')
-    bat_list = fc.get_bat_list(para_dict, mode)
+    #bat_list = fc.get_files_list(para_dict, mode)
     regx, mask_filename = fc.get_filename_regx(para_dict['log_pro'], **para_dict)
     if bat_list is not None:
         process_data = []
@@ -68,7 +79,7 @@ def main(argv):
     for state in para_dict['states']:
         file_name = r'%s_%s'%(state, mask_filename)
         para_dict['pkl_dir'] = {'run': os.path.normpath('/raid/data/processed_data/pkl/'+ app_dir +'/%s_pkl'%state),
-                                 'debug': os.path.normpath('./data/%s_pkl'%state)}
+                                 'debug': os.path.normpath('./data/%s/%s_pkl'%(para_dict['pkl_log'], state))}
         import build_model as bm
         bm.train_model(file_name, state, **para_dict)
     

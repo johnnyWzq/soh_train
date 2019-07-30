@@ -82,11 +82,14 @@ def save_workstate_data(data, mask_filename, data_dir):
     ioo.save_data_csv(tmp, filename, data_dir)
     print('the data has been save within each workstate.')
 
-def get_bat_list(para_dict, mode):
-    config = para_dict['config'][mode]
-    bat_list = ioo.input_table_name(config)
-    print(bat_list)
-    return bat_list
+def get_files_list(para_dict, mode):
+    #config = para_dict['config'][mode]
+    #bat_list = ioo.input_table_name(config)
+    data_dir = para_dict['raw_data_dir'][mode]
+    regx = ioo.get_file_name()
+    files = ioo.get_all_files_name(data_dir, regx)
+    #print(bat_list)
+    return files
 
 def read_bat_data(para_dict, mode, bat_name, limit=None):
     data_dir = para_dict['raw_data_dir'][mode]
